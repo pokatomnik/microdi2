@@ -1,0 +1,35 @@
+{
+  "name": "microdi2",
+  "version": "0.0.1",
+  "description": "MicroDI Typescript library",
+  "main": "dist/DI.js",
+  "source": "src/index.ts",
+  "module": "dist/DI.module.js",
+  "types": "dist/DI.d.ts",
+  "scripts": {
+    "test": "nyc ./node_modules/.bin/_mocha 'test/**/*.test.ts'",
+    "watch": "parcel watch",
+    "build": "parcel build"
+  },
+  "keywords": [
+    "di",
+    "library",
+    "typescript"
+  ],
+  "author": "Danilian Akhmedzianov",
+  "license": "ISC",
+  "devDependencies": {
+    "@parcel/packager-ts": "^2.8.3",
+    "@parcel/transformer-typescript-types": "^2.8.3",
+    "@types/chai": "^4.3.5",
+    "@types/mocha": "^10.0.1",
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "nyc": "^15.1.0",
+    "parcel": "^2.8.3",
+    "prettier": "^2.8.8",
+    "ts-loader": "^9.4.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  }
+}
