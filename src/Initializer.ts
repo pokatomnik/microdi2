@@ -3,12 +3,12 @@ import { Container } from "./Container";
 export const initContainer = () => {
   const container = new Container();
 
-  const provide = (
+  const provide = <TInstance extends object>(
     identifier: string,
-    clazz: new (...args: Array<any>) => unknown,
+    clazz: new (...args: Array<any>) => TInstance,
     deps: ReadonlyArray<string>
   ) => {
-    return container.singleton(identifier, clazz, deps);
+    return container.singleton<TInstance>(identifier, clazz, deps);
   };
 
   const resolve = <TInstance>(identifier: string): TInstance => {

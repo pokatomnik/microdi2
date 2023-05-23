@@ -59,9 +59,9 @@ export class Container {
     return this.resolveInternal(identifier, []);
   }
 
-  public singleton(
+  public singleton<TInstance extends object>(
     identifier: string,
-    clazz: new (...args: Array<any>) => unknown,
+    clazz: new (...args: Array<any>) => TInstance,
     deps: ReadonlyArray<string>
   ) {
     this._classesMap.set(identifier, {
@@ -69,12 +69,14 @@ export class Container {
       instantiationType: "SINGLETON",
       deps,
     });
-    return this;
+    return () => {
+      return this.resolve<TInstance>(identifier);
+    };
   }
 
-  public alwaysFresh(
+  public alwaysFresh<TInstance extends object>(
     identifier: string,
-    clazz: new (...args: Array<any>) => unknown,
+    clazz: new (...args: Array<any>) => TInstance,
     deps: ReadonlyArray<string>
   ) {
     this._classesMap.set(identifier, {
@@ -82,6 +84,8 @@ export class Container {
       instantiationType: "ALWAYS_FRESH",
       deps,
     });
-    return this;
+    return () => {
+      return this.resolve<TInstance>(identifier);
+    };
   }
 }

@@ -55,6 +55,19 @@ describe("DI Container", () => {
       expect(a.a()).to.equal("a!");
       expect(b.b()).to.equal("a!b!");
     });
+
+    it("in-place resolver callbacks returned", () => {
+      const container = new Container();
+
+      const resolveA = container.singleton("A", A, []);
+      const resolveB = container.singleton("B", B, ["A"]);
+
+      const a = resolveA();
+      const b = resolveB();
+
+      expect(a).to.be.instanceOf(A);
+      expect(b).to.be.instanceOf(B);
+    });
   });
 
   describe("test singleton cases:", () => {
