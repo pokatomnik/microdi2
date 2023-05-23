@@ -16,7 +16,7 @@ export class Container {
     return new Set(path).size !== path.length;
   }
 
-  public resolveInternal<TInstance>(
+  private resolveInternal<TInstance>(
     identifier: string,
     path: ReadonlyArray<string>
   ): TInstance {
