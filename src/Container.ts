@@ -4,6 +4,7 @@ import { MissingClassError } from "./MissingClassError";
 interface ClassWithDepsRecord {
   readonly class: new (...args: ReadonlyArray<unknown>) => unknown;
   readonly deps: ReadonlyArray<string>;
+  readonly instantiationType: "SINGLETON" | "ALWAYS_FRESH";
 }
 
 export class Container {
@@ -29,18 +30,27 @@ export class Container {
       throw new MissingClassError(identifier);
     }
 
-    const existingInstance = this._instancesMap.get(identifier);
-    if (existingInstance) {
-      return existingInstance as TInstance;
+    const {
+      class: Clazz,
+      deps: depsIndentifiers,
+      instantiationType,
+    } = classWithDeps;
+
+    if (instantiationType === "SINGLETON") {
+      const existingInstance = this._instancesMap.get(identifier);
+      if (existingInstance) {
+        return existingInstance as TInstance;
+      }
     }
 
-    const { class: Clazz, deps: depsIndentifiers } = classWithDeps;
     const deps = depsIndentifiers.map((depIdentifier) => {
       return this.resolveInternal(depIdentifier, path.concat(depIdentifier));
     });
     const instance = new Clazz(...deps);
 
-    this._instancesMap.set(identifier, instance);
+    if (instantiationType === "SINGLETON") {
+      this._instancesMap.set(identifier, instance);
+    }
 
     return instance as TInstance;
   }
@@ -49,12 +59,29 @@ export class Container {
     return this.resolveInternal(identifier, []);
   }
 
-  public provide(
+  public singleton(
     identifier: string,
     clazz: new (...args: Array<any>) => unknown,
     deps: ReadonlyArray<string>
   ) {
-    this._classesMap.set(identifier, { class: clazz, deps });
+    this._classesMap.set(identifier, {
+      class: clazz,
+      instantiationType: "SINGLETON",
+      deps,
+    });
+    return this;
+  }
+
+  public alwaysFresh(
+    identifier: string,
+    clazz: new (...args: Array<any>) => unknown,
+    deps: ReadonlyArray<string>
+  ) {
+    this._classesMap.set(identifier, {
+      class: clazz,
+      instantiationType: "ALWAYS_FRESH",
+      deps,
+    });
     return this;
   }
 }

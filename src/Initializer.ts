@@ -8,7 +8,7 @@ export const initContainer = () => {
     clazz: new (...args: Array<any>) => unknown,
     deps: ReadonlyArray<string>
   ) => {
-    return container.provide(identifier, clazz, deps);
+    return container.singleton(identifier, clazz, deps);
   };
 
   const resolve = <TInstance>(identifier: string): TInstance => {
