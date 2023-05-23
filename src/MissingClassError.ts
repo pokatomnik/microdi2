@@ -1,4 +1,4 @@
-export class InstantiationError extends Error {
+export class MissingClassError extends Error {
   public constructor(className: string) {
     super(`Class "${className}" not provided`);
   }

@@ -1,2 +1,4 @@
 export { Container } from "./Container";
-export { InstantiationError } from "./InstantiationError";
+export { MissingClassError } from "./MissingClassError";
+export { CyclicDepsError } from "./CyclicDepsError";
+export { initContainer } from "./Initializer";

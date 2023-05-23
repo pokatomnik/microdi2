@@ -1,5 +1,5 @@
-import { InstantiationError } from "./InstantiationError";
-import { Bind } from "./helpers/Bind";
+import { CyclicDepsError } from "./CyclicDepsError";
+import { MissingClassError } from "./MissingClassError";
 
 interface ClassWithDepsRecord {
   readonly class: new (...args: ReadonlyArray<unknown>) => unknown;
@@ -7,21 +7,26 @@ interface ClassWithDepsRecord {
 }
 
 export class Container {
-  private static _default: Container | null = null;
-
-  public static get default() {
-    return this._default ?? (this._default = new Container());
-  }
-
   private readonly _classesMap = new Map<string, ClassWithDepsRecord>();
 
   private readonly _instancesMap = new Map<string, unknown>();
 
-  @(Bind<Container, [identifier: string], any>)
-  public resolve<TInstance>(identifier: string): TInstance {
+  private checkCycles(path: ReadonlyArray<string>): boolean {
+    return new Set(path).size !== path.length;
+  }
+
+  public resolveInternal<TInstance>(
+    identifier: string,
+    path: ReadonlyArray<string>
+  ): TInstance {
+    const hasCycles = this.checkCycles(path);
+    if (hasCycles) {
+      throw new CyclicDepsError(identifier, path);
+    }
+
     const classWithDeps = this._classesMap.get(identifier);
     if (!classWithDeps) {
-      throw new InstantiationError(identifier);
+      throw new MissingClassError(identifier);
     }
 
     const existingInstance = this._instancesMap.get(identifier);
@@ -31,7 +36,7 @@ export class Container {
 
     const { class: Clazz, deps: depsIndentifiers } = classWithDeps;
     const deps = depsIndentifiers.map((depIdentifier) => {
-      return this.resolve(depIdentifier);
+      return this.resolveInternal(depIdentifier, path.concat(depIdentifier));
     });
     const instance = new Clazz(...deps);
 
@@ -40,7 +45,10 @@ export class Container {
     return instance as TInstance;
   }
 
-  @Bind
+  public resolve<TInstance>(identifier: string): TInstance {
+    return this.resolveInternal(identifier, []);
+  }
+
   public provide(
     identifier: string,
     clazz: new (...args: Array<any>) => unknown,
