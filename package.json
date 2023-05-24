@@ -1,6 +1,6 @@
 {
   "name": "microdi2",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "MicroDI Typescript library",
   "main": "dist/DI.js",
   "source": "src/index.ts",
