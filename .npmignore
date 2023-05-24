@@ -1,0 +1,9 @@
+node_modules/
+.nyc_output/
+.parcel-cache/
+src/
+test/
+.mocharc.json
+.nyrc.json
+register.js
+tsconfig.json
