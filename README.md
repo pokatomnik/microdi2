@@ -1,5 +1,7 @@
 # Micro Dependency injection library
 
+![Tests](https://github.com/pokatomnik/microdi2/actions/workflows/node.js.yml/badge.svg)
+
 ## The problem
 
 First, let's imagine we have such classes, one depends on another one.
