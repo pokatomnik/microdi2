@@ -2,6 +2,12 @@
 
 ![Tests](https://github.com/pokatomnik/microdi2/actions/workflows/node.js.yml/badge.svg)
 
+## Installation
+
+```sh
+npm i microdi2
+```
+
 ## The problem
 
 First, let's imagine we have such classes, one depends on another one.
